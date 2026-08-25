@@ -27,6 +27,7 @@ jobs:
         run: |
           cd sing-geosite
           go run -v .
+
       - name: Build geoip
         id: build_ip
         run: |
@@ -36,6 +37,14 @@ jobs:
       - name: Release rule sets
         if: steps.build.outputs.skip != 'true'
         run: .github/release-rule-set.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete old releases
+        uses: dev-drprasad/delete-older-releases@v0.3.4
+        with:
+          keep_latest: 5
+          delete_tags: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
